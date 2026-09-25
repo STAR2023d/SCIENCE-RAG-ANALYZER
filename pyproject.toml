@@ -1,0 +1,26 @@
+[project]
+name = "first-rag"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "dan kamau mawaura", email = "mwauradan37@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.141.1",
+    "inngest>=0.5.19",
+    "llama-index-readers-file>=0.7.0",
+    "openai>=3.19.2",
+    "python-dotenv>=1.2.3",
+    "qdrant-client>=1.19.1",
+    "streamlit>=1.64.0",
+    "uvicorn>=0.54.0",
+]
+
+[project.scripts]
+first-rag = "first_rag:main"
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"
