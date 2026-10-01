@@ -1,4 +1,13 @@
 #environment variables
-.env
 __pycache__/
-*.pyc
+*.pyc[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+/uploads
+.env
+.fastembed_cache/
