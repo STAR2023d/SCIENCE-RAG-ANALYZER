@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-EMBED_MODEL = "BAAI/bge-en-v1.5"
+EMBED_MODEL = "BAAI/bge-small-en-v1.5"
 EMBED_DIM = 768
 
 #stored inside the project so the download isn't lost when /tmp is cleadned
