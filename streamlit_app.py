@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-st.set_page_config(page_title="RAG Ingest PDF", page_icon="📄", layout="centered")
+st.set_page_config(page_title="BASIC INTERGRATED SCIENCE SYNTHESIZER", page_icon="📄", layout="centered")
 
 
 @st.cache_resource
@@ -57,7 +57,7 @@ else:
     st.session_state.pop("last_ingested", None)
 
 st.divider()
-st.title("Ask a question about your PDFs")
+st.title("Are you in grade 4-9? Ask me questions about science")
 
 
 def send_rag_query_event(question: str, top_k: int) -> str:
@@ -117,7 +117,7 @@ with st.form("rag_query_form"):
     submitted = st.form_submit_button("Ask")
 
 if submitted and question.strip():
-    with st.spinner("Sending event and generating answer..."):
+    with st.spinner("wait wait waaaait...here comes the answer!"):
         event_id = send_rag_query_event(question.strip(), int(top_k))
         output = wait_for_run_output(event_id)
         answer = output.get("answer", "")

@@ -2,7 +2,6 @@ import os
 import time
 from pathlib import Path
 
-from fastembed import TextEmbedding
 from openai import OpenAI, RateLimitError
 from llama_index.readers.file import PDFReader
 from llama_index.core.node_parser import SentenceSplitter
@@ -10,16 +9,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-EMBED_MODEL = "BAAI/bge-small-en-v1.5"
-EMBED_DIM = 768
-
-#stored inside the project so the download isn't lost when /tmp is cleadned
-_embedder = TextEmbedding(model_name=EMBED_MODEL, cache_dir=".fastembed_cache")
-
-splitter = SentenceSplitter(chunk_size=400, chunk_overlap=80)
-
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
 
+# max_retries=0: the SDK's instant retries only burn more quota; we back off ourselves
 client = OpenAI(
     api_key=os.environ["GEMINI_API_KEY"],
     base_url=GEMINI_BASE_URL,
@@ -27,21 +19,21 @@ client = OpenAI(
 )
 
 EMBED_MODEL = "gemini-embedding-001"
-EMBED_DIM = 3072
+EMBED_DIM = 3072  # must match vector_db.py (dim=3072)
 
 splitter = SentenceSplitter(chunk_size=1000, chunk_overlap=200)
 
 
-def load_and_chunk_pdf(path: str):
+def load_and_chunk_pdf(path: str) -> list[str]:
     docs = PDFReader().load_data(file=Path(path))
     texts = [d.text for d in docs if getattr(d, "text", None)]
-    chunks = []
+    chunks: list[str] = []
     for t in texts:
         chunks.extend(splitter.split_text(t))
     return chunks
 
 
-def embed_texts(texts: list[str], batch_size: int = 50) -> list[list[float]]:
+def embed_texts(texts: list[str], batch_size: int = 20) -> list[list[float]]:
     vectors: list[list[float]] = []
     for i in range(0, len(texts), batch_size):
         batch = texts[i : i + batch_size]

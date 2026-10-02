@@ -18,8 +18,10 @@ load_dotenv()
 
 logger = logging.getLogger("uvicorn")
 
-GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
-GEMINI_CHAT_MODEL = "gemini-3.8-flash"
+##GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+##GEMINI_CHAT_MODEL = "gemini-3.8-flash"
+GROQ_BASE_URL = "https://api.groq.com/openai/v1"
+GROQ_CHAT_MODEL = "openai/gpt-oss-120b"
 
 inngest_client = inngest.Inngest(
     app_id="rag_app",
@@ -105,7 +107,7 @@ async def rag_ingest_pdf(ctx: inngest.Context):
 
 @inngest_client.create_function(
     fn_id="RAG: Query PDF",
-    retries=0,
+    retries=4,
     trigger=inngest.TriggerEvent(event="rag/query_pdf_ai"),
 )
 async def rag_query_pdf_ai(ctx: inngest.Context):
@@ -139,9 +141,14 @@ async def rag_query_pdf_ai(ctx: inngest.Context):
     )
 
     adapter = ai.openai.Adapter(
-        auth_key=os.environ["GEMINI_API_KEY"],
-        base_url=GEMINI_BASE_URL,
-        model=GEMINI_CHAT_MODEL,
+        ##auth_key=os.environ["GEMINI_API_KEY"],
+        ##base_url=GEMINI_BASE_URL,
+        ##model=GEMINI_CHAT_MODEL,
+
+        auth_key=os.environ["GROQ_API_KEY"],
+        base_url=GROQ_BASE_URL,
+        model=GROQ_CHAT_MODEL
+
     )
 
     res = cast(
