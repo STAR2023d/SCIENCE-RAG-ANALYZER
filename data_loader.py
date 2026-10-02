@@ -19,7 +19,7 @@ client = OpenAI(
 )
 
 EMBED_MODEL = "gemini-embedding-001"
-EMBED_DIM = 3072  # must match vector_db.py (dim=3072)
+EMBED_DIM = 3072 
 
 splitter = SentenceSplitter(chunk_size=1000, chunk_overlap=200)
 

@@ -3,7 +3,7 @@ import pydantic
 ##A batch of text chunks with an optional source identifier
 class RAGChunkAndSrc(pydantic.BaseModel):
     chunks:list[str]
-    source_id: str | None=None
+    source_id: str 
 
 
 ##Result of upserting chunks into the vector store

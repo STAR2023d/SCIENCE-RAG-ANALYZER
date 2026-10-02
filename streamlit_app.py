@@ -9,9 +9,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
+
 st.set_page_config(page_title="BASIC INTERGRATED SCIENCE SYNTHESIZER", page_icon="📄", layout="centered")
 
-
+st.title("BASIC INTERGRATED SCIENCE SYNTHESIZER")
 @st.cache_resource
 def get_inngest_client() -> inngest.Inngest:
     return inngest.Inngest(app_id="rag_app", is_production=False)
@@ -36,6 +38,7 @@ def send_rag_ingest_event(pdf_path: Path) -> None:
             },
         )
     )
+
 
 
 st.title("Upload a PDF to Ingest")
