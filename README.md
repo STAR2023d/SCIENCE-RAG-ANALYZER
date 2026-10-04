@@ -277,4 +277,4 @@ See [LICENSE](LICENSE).
 
 ## Author
 
-**Dan Kamau Mwaura** · [LinkedIn](https://www.linkedin.com/in/Dan_Mwaura) · [Portfolio](https://dan-kamau-mwaura-portfolio.vercel.app/) · [Email-Me] (mwauradankamau@gmail.com)
+**Dan Kamau Mwaura** · [LinkedIn](https://www.linkedin.com/in/Dan_Mwaura) · [Portfolio](https://dan-kamau-mwaura-portfolio.vercel.app/) · mwauradankamau@gmail.com
