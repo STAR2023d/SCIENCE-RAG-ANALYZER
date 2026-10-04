@@ -6,7 +6,7 @@
 
 **A multimodal retrieval-augmented generation (RAG) system that lets students ask questions about their science notes and get a grounded answer, the sources it came from, and the matching diagrams, graphs and drawings.**
 
-Upload a PDF. Its text *and* pictures are indexed. Ask "How does the water cycle work?" and get a concise answer written only from your notes, cited by file, with the relevant figure shown underneath.
+Upload a PDF. Its text _and_ pictures are indexed. Ask "How does the water cycle work?" and get a concise answer written only from your notes, cited by file, with the relevant figure shown underneath.
 
 > Built for integrated science students at junior-secondary level, but nothing in the pipeline is science-specific. It works on any set of PDFs and images.
 
@@ -17,16 +17,16 @@ Upload a PDF. Its text *and* pictures are indexed. Ask "How does the water cycle
 
 ## Why this project is interesting (engineering highlights)
 
-| Concern | What I built | Where |
-|---|---|---|
-| **Durable, observable workflows** | Ingestion and Q&A run as [Inngest](https://www.inngest.com/) functions. Every step is checkpointed, retried with backoff, and inspectable in a dashboard. A failure in step 3 never repeats steps 1 and 2. | `workflows.py` |
-| **Multimodal retrieval** | A vision model turns each diagram, graph or drawing into a searchable description (type, labels, axes, concept). Descriptions are embedded with the same model as the text, so one question searches both. | `vision.py`, `service.py` |
-| **Idempotent ingestion** | Deterministic point IDs plus delete-by-source mean re-uploading a document replaces it cleanly: no duplicates, no stale chunks. | `service.py`, `vector_store.py` |
-| **Testable architecture** | Business logic is framework-agnostic and depends on small protocols (`Embedder`, `Captioner`). The full pipeline is tested offline with fakes and an in-memory vector DB. No API keys needed to run the tests. | `service.py`, `tests/` |
-| **Resilience to flaky APIs** | Linear backoff for 429/503, small batches, pauses between image calls, and non-retriable errors for problems retrying cannot fix (missing file, scanned PDF). | `retry.py`, `workflows.py` |
-| **Guard rails against hallucination** | Prompt restricts answers to retrieved context; if nothing relevant is retrieved, the LLM call is skipped entirely; images below a similarity cutoff are not shown. | `prompts.py`, `workflows.py` |
-| **Measure, don't guess** | A retrieval evaluation harness reports hit rate@k and MRR on your own question set. | `evaluation.py` |
-| **Fails loudly, early** | Switching embedding models without rebuilding the collection raises a clear dimension-mismatch error instead of returning nonsense. | `vector_store.py` |
+| Concern                               | What I built                                                                                                                                                                                                   | Where                           |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| **Durable, observable workflows**     | Ingestion and Q&A run as [Inngest](https://www.inngest.com/) functions. Every step is checkpointed, retried with backoff, and inspectable in a dashboard. A failure in step 3 never repeats steps 1 and 2.     | `workflows.py`                  |
+| **Multimodal retrieval**              | A vision model turns each diagram, graph or drawing into a searchable description (type, labels, axes, concept). Descriptions are embedded with the same model as the text, so one question searches both.     | `vision.py`, `service.py`       |
+| **Idempotent ingestion**              | Deterministic point IDs plus delete-by-source mean re-uploading a document replaces it cleanly: no duplicates, no stale chunks.                                                                                | `service.py`, `vector_store.py` |
+| **Testable architecture**             | Business logic is framework-agnostic and depends on small protocols (`Embedder`, `Captioner`). The full pipeline is tested offline with fakes and an in-memory vector DB. No API keys needed to run the tests. | `service.py`, `tests/`          |
+| **Resilience to flaky APIs**          | Linear backoff for 429/503, small batches, pauses between image calls, and non-retriable errors for problems retrying cannot fix (missing file, scanned PDF).                                                  | `retry.py`, `workflows.py`      |
+| **Guard rails against hallucination** | Prompt restricts answers to retrieved context; if nothing relevant is retrieved, the LLM call is skipped entirely; images below a similarity cutoff are not shown.                                             | `prompts.py`, `workflows.py`    |
+| **Measure, don't guess**              | A retrieval evaluation harness reports hit rate@k and MRR on your own question set.                                                                                                                            | `evaluation.py`                 |
+| **Fails loudly, early**               | Switching embedding models without rebuilding the collection raises a clear dimension-mismatch error instead of returning nonsense.                                                                            | `vector_store.py`               |
 
 ---
 
@@ -90,19 +90,19 @@ sequenceDiagram
 
 ## Tech stack
 
-| Layer | Technology |
-|---|---|
-| Language / tooling | Python 3.12, [uv](https://docs.astral.sh/uv/), Ruff, pytest |
-| API | FastAPI, Uvicorn |
-| Orchestration | Inngest (Python SDK): durable steps, retries, fan-out |
-| PDF parsing | llama-index PDFReader, PyMuPDF (image extraction) |
-| Chunking | llama-index `SentenceSplitter` (sentence-aware, token-sized, overlapping) |
-| Embeddings and vision | Google Gemini (via its OpenAI-compatible API) |
-| Answer generation | Groq (`openai/gpt-oss-120b` by default) |
-| Vector database | Qdrant (cosine similarity, payload index on `source`) |
-| UI | Streamlit |
-| Data models | Pydantic v2 |
-| CI | GitHub Actions (lint, format check, tests) |
+| Layer                 | Technology                                                                |
+| --------------------- | ------------------------------------------------------------------------- |
+| Language / tooling    | Python 3.12, [uv](https://docs.astral.sh/uv/), Ruff, pytest               |
+| API                   | FastAPI, Uvicorn                                                          |
+| Orchestration         | Inngest (Python SDK): durable steps, retries, fan-out                     |
+| PDF parsing           | llama-index PDFReader, PyMuPDF (image extraction)                         |
+| Chunking              | llama-index `SentenceSplitter` (sentence-aware, token-sized, overlapping) |
+| Embeddings and vision | Google Gemini (via its OpenAI-compatible API)                             |
+| Answer generation     | Groq (`openai/gpt-oss-120b` by default)                                   |
+| Vector database       | Qdrant (cosine similarity, payload index on `source`)                     |
+| UI                    | Streamlit                                                                 |
+| Data models           | Pydantic v2                                                               |
+| CI                    | GitHub Actions (lint, format check, tests)                                |
 
 ---
 
@@ -157,19 +157,19 @@ uv run python scripts/eval_retrieval.py eval/cases.jsonl -k 5    # retrieval qua
 
 All settings are environment variables (see `.env.example`). Defaults live in `src/science_rag/config.py`.
 
-| Variable | Default | Purpose |
-|---|---|---|
-| `GEMINI_API_KEY` | none (required) | Embeddings and image descriptions |
-| `GROQ_API_KEY` | none (required) | Answer generation |
-| `QDRANT_URL` | `http://localhost:6333` | Vector database |
-| `CHAT_MODEL` | `openai/gpt-oss-120b` | LLM that writes the answer |
-| `VISION_MODEL` | `gemini-3.8-flash` | Describes images |
-| `EMBED_MODEL` / `EMBED_DIM` | `gemini-embedding-001` / `3072` | Must match the collection's vector size |
-| `CHUNK_SIZE` / `CHUNK_OVERLAP` | `1000` / `200` | Chunking, in tokens |
-| `TOP_K` | `5` | Text chunks retrieved per question |
-| `IMAGE_TOP_K` | `3` | Maximum figures returned |
-| `MIN_IMAGE_SCORE` | `0.55` | Similarity cutoff for showing a figure (tune with `scripts/query.py`) |
-| `RENDER_DRAWING_PAGES` | `false` | Also screenshot pages whose graphs are vector drawings |
+| Variable                       | Default                         | Purpose                                                               |
+| ------------------------------ | ------------------------------- | --------------------------------------------------------------------- |
+| `GEMINI_API_KEY`               | none (required)                 | Embeddings and image descriptions                                     |
+| `GROQ_API_KEY`                 | none (required)                 | Answer generation                                                     |
+| `QDRANT_URL`                   | `http://localhost:6333`         | Vector database                                                       |
+| `CHAT_MODEL`                   | `openai/gpt-oss-120b`           | LLM that writes the answer                                            |
+| `VISION_MODEL`                 | `gemini-3.8-flash`              | Describes images                                                      |
+| `EMBED_MODEL` / `EMBED_DIM`    | `gemini-embedding-001` / `3072` | Must match the collection's vector size                               |
+| `CHUNK_SIZE` / `CHUNK_OVERLAP` | `1000` / `200`                  | Chunking, in tokens                                                   |
+| `TOP_K`                        | `5`                             | Text chunks retrieved per question                                    |
+| `IMAGE_TOP_K`                  | `3`                             | Maximum figures returned                                              |
+| `MIN_IMAGE_SCORE`              | `0.55`                          | Similarity cutoff for showing a figure (tune with `scripts/query.py`) |
+| `RENDER_DRAWING_PAGES`         | `false`                         | Also screenshot pages whose graphs are vector drawings                |
 
 Model names change over time; if a provider returns "model not found", update the matching variable.
 
@@ -219,7 +219,7 @@ make format   # ruff format
 Retrieval quality is measured, not assumed. Put real questions in a JSONL file:
 
 ```json
-{"question": "What is photosynthesis?", "expected_substring": "chlorophyll"}
+{ "question": "What is photosynthesis?", "expected_substring": "chlorophyll" }
 ```
 
 ```bash
@@ -277,4 +277,4 @@ See [LICENSE](LICENSE).
 
 ## Author
 
-**Your Name** · [LinkedIn](https://www.linkedin.com/in/YOUR_PROFILE) · [Portfolio](https://YOUR_SITE) · you@example.com
+**Dan Kamau Mwaura** · [LinkedIn](https://www.linkedin.com/in/Dan_Mwaura) · [Portfolio](https://dan-kamau-mwaura-portfolio.vercel.app/) · [Email-Me] (mwauradankamau@gmail.com)
